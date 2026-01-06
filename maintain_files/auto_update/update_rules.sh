@@ -1,5 +1,16 @@
 #!/bin/sh
 
+# sedi define for macos/linux
+sedi() {
+  if sed --version >/dev/null 2>&1; then
+    # GNU sed
+    sed -i"" "$@"
+  else
+    # BSD sed
+    sed -i "" "$@"
+  fi
+}
+
 # ======================================
 # get gfwlist for shadowsocks ipset mode
 ./fwlist.py gfwlist_download.conf
@@ -13,10 +24,10 @@ sort -k 2 -t. -u gfwlist_merge.conf > gfwlist1.conf
 rm gfwlist_merge.conf
 
 # delete site below if any
-sed -i '' '/m-team/d' "gfwlist1.conf"
-sed -i '' '/85.17.73.31/d' "gfwlist1.conf"
-sed -i '' '/windowsupdate/d' "gfwlist1.conf"
-sed -i '' '/v2ex/d' "gfwlist1.conf"
+sedi '/m-team/d' "gfwlist1.conf"
+sedi '/85.17.73.31/d' "gfwlist1.conf"
+sedi '/windowsupdate/d' "gfwlist1.conf"
+sedi '/v2ex/d' "gfwlist1.conf"
 md5sum1=$(md5sum gfwlist1.conf | sed 's/ /\n/g'| sed -n 1p)
 md5sum2=$(md5sum ../gfwlist.conf | sed 's/ /\n/g'| sed -n 1p)
 
@@ -31,7 +42,7 @@ else
 	rm gfwlist_download.conf
 	mv -f gfwlist1.conf ../gfwlist.conf
 	new_line="$(date +%Y-%m-%d) # $md5sum1 gfwlist"
-	sed -i "" -e "/ gfwlist$/s~.*~${new_line}~" ../version1
+	sedi "/ gfwlist$/s~.*~${new_line}~" ../version1
 fi
 echo =================
 # ======================================
@@ -51,7 +62,7 @@ else
 	echo update chnroute!
 	mv -f chnroute1.txt ../chnroute.txt
 	new_line="$(date +%Y-%m-%d) # $md5sum3 chnroute"
-	sed -i "" -e "/ chnroute$/s~.*~${new_line}~" ../version1
+	sedi "/ chnroute$/s~.*~${new_line}~" ../version1
 fi
 echo =================
 # ======================================
@@ -75,7 +86,7 @@ else
 	rm accelerated-domains.china.conf cdn_download.txt
 	mv -f cdn1.txt ../cdn.txt
 	new_line="$(date +%Y-%m-%d) # $md5sum5 cdn"
-	sed -i "" -e "/ cdn$/s~.*~${new_line}~" ../version1
+	sedi "/ cdn$/s~.*~${new_line}~" ../version1
 fi
 echo =================
 # ======================================
