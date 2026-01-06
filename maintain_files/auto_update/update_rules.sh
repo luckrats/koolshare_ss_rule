@@ -13,15 +13,15 @@ sort -k 2 -t. -u gfwlist_merge.conf > gfwlist1.conf
 rm gfwlist_merge.conf
 
 # delete site below if any
-sed -i '/m-team/d' "gfwlist1.conf"
-sed -i '/85.17.73.31/d' "gfwlist1.conf"
-sed -i '/windowsupdate/d' "gfwlist1.conf"
-sed -i '/v2ex/d' "gfwlist1.conf"
-
+sed -i '' '/m-team/d' "gfwlist1.conf"
+sed -i '' '/85.17.73.31/d' "gfwlist1.conf"
+sed -i '' '/windowsupdate/d' "gfwlist1.conf"
+sed -i '' '/v2ex/d' "gfwlist1.conf"
 md5sum1=$(md5sum gfwlist1.conf | sed 's/ /\n/g'| sed -n 1p)
 md5sum2=$(md5sum ../gfwlist.conf | sed 's/ /\n/g'| sed -n 1p)
 
 echo =================
+echo ${md5sum1} "vs" ${md5sum2}
 if [ "$md5sum1"x = "$md5sum2"x ];then
 	echo gfwlist same md5!
 	rm gfwlist1.conf
@@ -30,7 +30,8 @@ else
 	echo update gfwlist!
 	rm gfwlist_download.conf
 	mv -f gfwlist1.conf ../gfwlist.conf
-	sed -i "1c `date +%Y-%m-%d` # $md5sum1 gfwlist" ../version1
+	new_line="$(date +%Y-%m-%d) # $md5sum1 gfwlist"
+	sed -i "" -e "/ gfwlist$/s~.*~${new_line}~" ../version1
 fi
 echo =================
 # ======================================
@@ -42,13 +43,15 @@ md5sum3=$(md5sum chnroute1.txt | sed 's/ /\n/g'| sed -n 1p)
 md5sum4=$(md5sum ../chnroute.txt | sed 's/ /\n/g'| sed -n 1p)
 
 echo =================
+echo ${md5sum3} "vs" ${md5sum4}
 if [ "$md5sum3"x = "$md5sum4"x ];then
 	echo chnroute same md5!
 	rm chnroute1.txt
 else
 	echo update chnroute!
 	mv -f chnroute1.txt ../chnroute.txt
-	sed -i "2c `date +%Y-%m-%d` # $md5sum3 chnroute" ../version1
+	new_line="$(date +%Y-%m-%d) # $md5sum3 chnroute"
+	sed -i "" -e "/ chnroute$/s~.*~${new_line}~" ../version1
 fi
 echo =================
 # ======================================
@@ -61,8 +64,9 @@ cat cdn_koolshare.txt cdn_download.txt | sort -u > cdn1.txt
 
 md5sum5=$(md5sum cdn1.txt | sed 's/ /\n/g'| sed -n 1p)
 md5sum6=$(md5sum ../cdn.txt | sed 's/ /\n/g'| sed -n 1p)
-
+echo ${md5sum5} "vs" ${md5sum6}
 echo =================
+echo ${md5sum3} "vs" ${md5sum4}
 if [ "$md5sum5"x = "$md5sum6"x ];then
 	echo cdn list same md5!
 	rm cdn1.txt accelerated-domains.china.conf cdn_download.txt
@@ -70,7 +74,8 @@ else
 	echo update cdn!
 	rm accelerated-domains.china.conf cdn_download.txt
 	mv -f cdn1.txt ../cdn.txt
-	sed -i "4c `date +%Y-%m-%d` # $md5sum5 cdn" ../version1
+	new_line="$(date +%Y-%m-%d) # $md5sum5 cdn"
+	sed -i "" -e "/ cdn$/s~.*~${new_line}~" ../version1
 fi
 echo =================
 # ======================================
